@@ -3,7 +3,23 @@ F0<-read.csv("C:/Users/Julie/Desktop/Postdoc/Projet Arabido/F0_RGRvsLifeSpan.csv
 
 # Plot RGR vs LifeSpan
 plot(F0$T_repro,F0$RGRinf,type='n')
-text(F0$T_repro,F0$RGRinf,labels=F0$accessionid)
+text(F0$T_repro,F0$RGRinf,labels=F0$accessionid,cex=0.7)
+
+plot(F0$T_repro,log(F0$RGRinf),type='n')
+text(F0$T_repro,log(F0$RGRinf),labels=F0$accessionid,cex=0.7)
+
+summary(lm(log(F0$RGRinf)~F0$T_repro,data=F0))
+  # 
+  # Coefficients:
+  #               Estimate Std. Error t value Pr(>|t|)    
+  # (Intercept)  5.1347877  0.0530486  96.794  < 2e-16 ***
+  # F0$T_repro  -0.0054468  0.0007897  -6.897 1.68e-10 ***
+  # ---
+  # Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+  # 
+  # Residual standard error: 0.2081 on 140 degrees of freedom
+  # Multiple R-squared:  0.2536,	Adjusted R-squared:  0.2483 
+  # F-statistic: 47.57 on 1 and 140 DF,  p-value: 1.677e-10
 
 # Plot log(RGR) vs log(LifeSpan)
 plot(log(F0$T_repro),log(F0$RGRinf),type='n')
@@ -52,6 +68,7 @@ text(log(F0.high.rank$T_repro),log(F0.high.rank$RGRinf),
      labels=F0.high.rank$accessionid,
      cex=0.6, col='red')
 
-write.csv(F0.sorted, file = "C:/Users/Julie/Desktop/Postdoc/Projet Arabido/F0_RGRvsT_Repro_UpperHalf.csv")
+write.csv(F0.sorted, 
+          file = "C:/Users/Julie/Desktop/Postdoc/Projet Arabido/Arabido/F0_RGRvsT_Repro_Sorted.csv")
 
  
