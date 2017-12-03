@@ -1,5 +1,5 @@
-# 1 plot Lifespan-RGR trade-off in all F0s
-# 2 plot Lifespan-RGR trade-off in selected F0s
+# (1) plot Lifespan-RGR trade-off in all F0s
+# (2) plot Lifespan-RGR trade-off in selected F0s
 
 # Plot Lifespan-RGR trade-off in all F0s####
 #==========================================#
