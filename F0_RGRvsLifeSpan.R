@@ -1,10 +1,17 @@
-# Read F0 file
+# 1 plot Lifespan-RGR trade-off in all F0s
+# 2 plot Lifespan-RGR trade-off in selected F0s
+
+# Plot Lifespan-RGR trade-off in all F0s####
+#==========================================#
+
+# Read F0 file 
 F0<-read.csv("C:/Users/Julie/Desktop/Postdoc/Projet Arabido/F0_RGRvsLifeSpan.csv",dec='.',header=T)
 
 # Plot RGR vs LifeSpan
 plot(F0$T_repro,F0$RGRinf,type='n')
 text(F0$T_repro,F0$RGRinf,labels=F0$accessionid,cex=0.7)
 
+# Plot log(RGR) vs LifeSpan
 plot(F0$T_repro,log(F0$RGRinf),type='n')
 text(F0$T_repro,log(F0$RGRinf),labels=F0$accessionid,cex=0.7)
 
@@ -15,7 +22,7 @@ summary(lm(log(F0$RGRinf)~F0$T_repro,data=F0))
   # (Intercept)  5.1347877  0.0530486  96.794  < 2e-16 ***
   # F0$T_repro  -0.0054468  0.0007897  -6.897 1.68e-10 ***
   # ---
-  # Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+  # Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
   # 
   # Residual standard error: 0.2081 on 140 degrees of freedom
   # Multiple R-squared:  0.2536,	Adjusted R-squared:  0.2483 
@@ -34,13 +41,13 @@ summary(slope)
   # (Intercept)      6.48148    0.21867  29.640  < 2e-16 ***
   # log(F0$T_repro) -0.41305    0.05322  -7.762 1.59e-12 ***
   # ---
-  # Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+  # Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
   # 
   # Residual standard error: 0.2014 on 140 degrees of freedom
   # Multiple R-squared:  0.3009,	Adjusted R-squared:  0.2959 
   # F-statistic: 60.24 on 1 and 140 DF,  p-value: 1.591e-12
 
-slope = -0.41
+  # slope = -0.41
 
 # put RGR & T_Repro on same scale - 0 to 1
 F0$rel.RGR<-F0$RGRinf/max(F0$RGRinf)
@@ -70,5 +77,25 @@ text(log(F0.high.rank$T_repro),log(F0.high.rank$RGRinf),
 
 write.csv(F0.sorted, 
           file = "C:/Users/Julie/Desktop/Postdoc/Projet Arabido/Arabido/F0_RGRvsT_Repro_Sorted.csv")
+
+# Plot Lifespan-RGR trade-off in selected F0s####
+#===============================================#
+# Read F0_sowing file 
+F0.sowing<-read.csv("C:/Users/Julie/Desktop/Postdoc/Projet Arabido/Arabido/F0_Sowinglist.csv",dec='.',header=T)
+
+names(F0.sowing)
+dim(F0.sowing)
+# 94 11
+
+# Plot all F0s as background
+plot(log(F0$T_repro),log(F0$RGRinf),type='n',main='94 Accessions selected for sowing')
+text(log(F0$T_repro),log(F0$RGRinf),labels=F0$accessionid,
+     cex=0.6)
+
+# Plot sowing list F0s in red
+text(log(F0.sowing$T_repro),log(F0.sowing$RGRinf),
+     labels=F0.sowing$accessionid,
+     cex=0.6, col='red',font=2)
+
 
  
