@@ -81,37 +81,92 @@ F2.GrandChildren<-F2pops.alldata[!(F2pops.alldata$GP.sown==0),]
 dim(F2.GrandChildren) #177 40
 
 # Plot GenoDist vs PhenoDist of GrandChildren only
-plot(F2.GrandChildren$GeneticDist,F2.GrandChildren$DistPhenoTot,type='n',main='PhenoDist vs GenoDist')
+plot(F2.GrandChildren$GeneticDist,F2.GrandChildren$DistPhenoTot,type='n',main='PhenoDist vs GenoDist\n GrandChildren of sown Accessions ')
 text(F2.GrandChildren$GeneticDist,F2.GrandChildren$DistPhenoTot,labels=F2.GrandChildren$code,cex=0.6)
 
 # Identify which pops to select in each group of low-, mid-, high- genetic and phenotypic distance
 
-# which rows to select?
-dim(F2pops.alldata) #367 35
-# 6 lowest P distance = rows 1:6
-367/2 = 183.5
-# 6 mid P distance = rows 180-186
-# 6 highest P distance = rows 361-367
+#(1) LowP lowG
+lowP.lowG<-F2.GrandChildren[F2.GrandChildren$DistPhenoTot<300&F2.GrandChildren$GeneticDist<0.022,]
+dim(lowP.lowG) # 4
+lowP.lowG$code # [1] rd190 rd120 rd533 rd512
 
-# give relative ranking on phenotypic and genetic distance to add the two values
-F2pops.alldata$rel.GeneticDist<-F2pops.alldata$GeneticDist/max(F2pops.alldata$GeneticDist)
-F2pops.alldata$rel.PhenoDist<-F2pops.alldata$DistPhenoTot/max(F2pops.alldata$DistPhenoTot)
-
-# Plot RELATIVE GenoDist vs PhenoDist
-plot(F2pops.alldata$rel.GeneticDist,F2pops.alldata$rel.PhenoDist,type='n',main='PhenoDist vs GenoDist')
-text(F2pops.alldata$rel.GeneticDist,F2pops.alldata$rel.PhenoDist,labels=F2pops.alldata$code,cex=0.6)
+text(lowP.lowG$GeneticDist,lowP.lowG$DistPhenoTot,labels=lowP.lowG$code,cex=0.6, col='darkgreen',font=2)
 
 
-# Low Phenotypic distance group
-lowP<-F2pops.alldata[order(F2pops.alldata$DistPhenoTot,decreasing = FALSE),][1:6,]
-dim(lowP) # 6 35
+# (2) lowP midG
+median(F2.GrandChildren$GeneticDist)#0.03
+lowP.midG<-F2.GrandChildren[F2.GrandChildren$DistPhenoTot<100 &
+                              F2.GrandChildren$GeneticDist<0.032 &
+                              F2.GrandChildren$GeneticDist>0.028,]
+dim(lowP.midG) # 4 40
+lowP.midG$code # rd079 rd106 rd088 rd442
 
-# Mid Phenotypic distance group
-midP<-F2pops.alldata[order(F2pops.alldata$DistPhenoTot,decreasing = FALSE),][181:186,]
-dim(midP) # 6 35
+text(lowP.midG$GeneticDist,lowP.midG$DistPhenoTot,labels=lowP.midG$code,cex=0.6, col='red',font=2)
 
-# High Phenotypic distance group
-highP<-F2pops.alldata[order(F2pops.alldata$DistPhenoTot,decreasing = FALSE),][362:367,]
-dim(highP) # 6 35
+# (3) LowP HighG
+lowP.highG<-F2.GrandChildren[order(F2.GrandChildren$GeneticDist,decreasing = TRUE),][1:4,]
+dim(lowP.highG) # 4 40
+lowP.highG$code # rd321 rd283 rd245 rd256
+
+text(lowP.highG$GeneticDist,lowP.highG$DistPhenoTot,labels=lowP.highG$code,cex=0.6, col='blue2',font=2)
+
+# (4) midP lowG
+midP.lowG<-F2.GrandChildren[F2.GrandChildren$DistPhenoTot>900 &
+                              F2.GrandChildren$DistPhenoTot<1250 & 
+                              F2.GrandChildren$GeneticDist<0.025 ,]
+dim(midP.lowG) # 4 40
+midP.lowG$code #  rd153 rd496 rd499 rd126
+
+text(midP.lowG$GeneticDist,midP.lowG$DistPhenoTot,labels=midP.lowG$code,cex=0.6, col='forestgreen',font=2)
+
+# (5)midP midG
+midP.midG<-F2.GrandChildren[F2.GrandChildren$DistPhenoTot>900 &
+                              F2.GrandChildren$DistPhenoTot<1100 & 
+                              F2.GrandChildren$GeneticDist>0.028 &
+                              F2.GrandChildren$GeneticDist<0.032,]
+dim(midP.midG) # 4 40
+midP.midG$code # rd284 rd164 rd409 rd225
+
+text(midP.midG$GeneticDist,midP.midG$DistPhenoTot,labels=midP.midG$code,cex=0.6, col='orange',font=2)
+
+# (6) midP highG
+midP.highG<-F2.GrandChildren[F2.GrandChildren$DistPhenoTot>900 &
+                              F2.GrandChildren$DistPhenoTot<1800 & 
+                              F2.GrandChildren$GeneticDist>0.036,]
+dim(midP.highG) # 4 40
+midP.highG$code # rd536 rd275 rd400 rd541
+
+text(midP.highG$GeneticDist,midP.highG$DistPhenoTot,labels=midP.highG$code,cex=0.6, col='dodgerblue',font=2)
+
+# (7) highP midG
+highP.midG<-F2.GrandChildren[F2.GrandChildren$DistPhenoTot>2500,]
+
+dim(highP.midG) # 4 40
+highP.midG$code # rd393 rd537 rd348 rd535
+
+text(highP.midG$GeneticDist,highP.midG$DistPhenoTot,labels=highP.midG$code,cex=0.6, col='deeppink1',font=2)
+
+# Plot on a normal scale 
+plot(F2.GrandChildren$GeneticDist,F2.GrandChildren$DistPhenoTot,type='n',main='PhenoDist vs GenoDist\n GrandChildren of sown Accessions ')
+text(F2.GrandChildren$GeneticDist,F2.GrandChildren$DistPhenoTot,labels=F2.GrandChildren$code,cex=0.6)
+text(lowP.lowG$GeneticDist,lowP.lowG$DistPhenoTot,labels=lowP.lowG$code,cex=0.6, col='darkgreen',font=2)
+text(lowP.midG$GeneticDist,lowP.midG$DistPhenoTot,labels=lowP.midG$code,cex=0.6, col='red',font=2)
+text(lowP.highG$GeneticDist,lowP.highG$DistPhenoTot,labels=lowP.highG$code,cex=0.6, col='blue2',font=2)
+text(midP.lowG$GeneticDist,midP.lowG$DistPhenoTot,labels=midP.lowG$code,cex=0.6, col='forestgreen',font=2)
+text(midP.highG$GeneticDist,midP.highG$DistPhenoTot,labels=midP.highG$code,cex=0.6, col='dodgerblue',font=2)
+text(midP.midG$GeneticDist,midP.midG$DistPhenoTot,labels=midP.midG$code,cex=0.6, col='orange',font=2)
+text(highP.midG$GeneticDist,highP.midG$DistPhenoTot,labels=highP.midG$code,cex=0.6, col='deeppink1',font=2)
 
 
+# Plot on a log scale? 
+
+plot(log(F2.GrandChildren$GeneticDist),log(F2.GrandChildren$DistPhenoTot),type='n',main='PhenoDist vs GenoDist\n GrandChildren of sown Accessions ')
+text(log(F2.GrandChildren$GeneticDist),log(F2.GrandChildren$DistPhenoTot),labels=F2.GrandChildren$code,cex=0.6)
+text(log(lowP.lowG$GeneticDist),log(lowP.lowG$DistPhenoTot),labels=lowP.lowG$code,cex=0.6, col='darkgreen',font=2)
+text(log(lowP.midG$GeneticDist),log(lowP.midG$DistPhenoTot),labels=lowP.midG$code,cex=0.6, col='red',font=2)
+text(log(lowP.highG$GeneticDist),log(lowP.highG$DistPhenoTot),labels=lowP.highG$code,cex=0.6, col='blue2',font=2)
+text(log(midP.lowG$GeneticDist),log(midP.lowG$DistPhenoTot),labels=midP.lowG$code,cex=0.6, col='forestgreen',font=2)
+text(log(midP.midG$GeneticDist),log(midP.midG$DistPhenoTot),labels=midP.midG$code,cex=0.6, col='orange',font=2)
+text(log(midP.highG$GeneticDist),log(midP.highG$DistPhenoTot),labels=midP.highG$code,cex=0.6, col='dodgerblue',font=2)
+text(log(highP.midG$GeneticDist),log(highP.midG$DistPhenoTot),labels=highP.midG$code,cex=0.6, col='deeppink1',font=2)
