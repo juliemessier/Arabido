@@ -35,6 +35,8 @@ names(F1)
 # Create subtable of F0 Distances for the F2 pops we have 
 F2pops<-F0.Dist[(F0.Dist$idCombination%in%F1$idGenotype),]
 
+# Create subtable of F0 distances for the F2pops with 2 Grand-Parents in 
+
 dim(F2pops)
 # 367 11
 head(F2pops)[1:3]
@@ -80,9 +82,54 @@ for (r in 1:nrow(F2pops.alldata)){
 F2.GrandChildren<-F2pops.alldata[!(F2pops.alldata$GP.sown==0),]
 dim(F2.GrandChildren) #177 40
 
+F2.w2GPsown<-F2pops.alldata[(F2pops.alldata$GP.sown==2),]
+dim(F2.w2GPsown)
+# 31
+
 # Plot GenoDist vs PhenoDist of GrandChildren only
 plot(F2.GrandChildren$GeneticDist,F2.GrandChildren$DistPhenoTot,type='n',main='PhenoDist vs GenoDist\n GrandChildren of sown Accessions ')
-text(F2.GrandChildren$GeneticDist,F2.GrandChildren$DistPhenoTot,labels=F2.GrandChildren$code,cex=0.6)
+text(F2.GrandChildren$GeneticDist,F2.GrandChildren$DistPhenoTot,labels=F2.GrandChildren$code,cex=0.7)
+
+# Show list of F2s with 2 GrandParents in sown list
+text(F2.w2GPsown$GeneticDist,F2.w2GPsown$DistPhenoTot,labels=F2.w2GPsown$code,cex=0.7,col='red',font=2)
+
+F2sow<-F2.w2GPsown[!(F2.w2GPsown$code=='rd039'),]
+dim(F2sow)
+F2sow<-F2sow[!(F2sow$code=='rd326'),]
+dim(F2sow)
+F2sow<-F2sow[!(F2sow$code=='rd278'),]
+dim(F2sow)
+F2sow<-F2sow[!(F2sow$code=='rd351'),]
+dim(F2sow)
+F2sow<-F2sow[!(F2sow$code=='rd034'),]
+dim(F2sow)
+F2sow<-F2sow[!(F2sow$code=='rd099'),]
+dim(F2sow)
+F2sow<-F2sow[!(F2sow$code=='rd081'),]
+dim(F2sow)
+F2sow<-F2sow[!(F2sow$code=='rd086'),]
+dim(F2sow)
+F2sow<-F2sow[!(F2sow$code=='rd461'),]
+dim(F2sow) # 22 40
+F2sow<-F2sow[!(F2sow$code=='rd169'),]
+dim(F2sow) # 21 40
+F2sow<-F2sow[!(F2sow$code=='rd075'),]
+dim(F2sow) # 20 40
+
+# Plot F2s to sow on normal scale
+plot(F2.GrandChildren$GeneticDist,F2.GrandChildren$DistPhenoTot,type='n',main='PhenoDist vs GenoDist\n GrandChildren of sown Accessions ')
+text(F2.GrandChildren$GeneticDist,F2.GrandChildren$DistPhenoTot,labels=F2.GrandChildren$code,cex=0.7)
+text(F2sow$GeneticDist,F2sow$DistPhenoTot,labels=F2sow$code,cex=0.7,col='red',font=2)
+
+# Plot F2s to sow on log scale
+plot(log(F2.GrandChildren$GeneticDist),log(F2.GrandChildren$DistPhenoTot),type='n',main='PhenoDist vs GenoDist\n GrandChildren of sown Accessions ')
+text(log(F2.GrandChildren$GeneticDist),log(F2.GrandChildren$DistPhenoTot),labels=F2.GrandChildren$code,cex=0.7)
+text(log(F2sow$GeneticDist),log(F2sow$DistPhenoTot),labels=F2sow$code,cex=0.7,col='red',font=2)
+
+
+##################################################################
+### Code not necessary anymore, since we are not doing groups ####
+
 
 # Identify which pops to select in each group of low-, mid-, high- genetic and phenotypic distance
 
@@ -159,7 +206,7 @@ text(midP.midG$GeneticDist,midP.midG$DistPhenoTot,labels=midP.midG$code,cex=0.6,
 text(highP.midG$GeneticDist,highP.midG$DistPhenoTot,labels=highP.midG$code,cex=0.6, col='deeppink1',font=2)
 
 
-# Plot on a log scale? 
+# Plot on a log scale
 
 plot(log(F2.GrandChildren$GeneticDist),log(F2.GrandChildren$DistPhenoTot),type='n',main='PhenoDist vs GenoDist\n GrandChildren of sown Accessions ')
 text(log(F2.GrandChildren$GeneticDist),log(F2.GrandChildren$DistPhenoTot),labels=F2.GrandChildren$code,cex=0.6)
