@@ -97,5 +97,11 @@ text(log(F0.sowing$T_repro),log(F0.sowing$RGRinf),
      labels=F0.sowing$accessionid,
      cex=0.6, col='red',font=2)
 
+text(log(F0.sowing[F0.sowing$accessionid==9769,'T_repro']),log(F0.sowing[F0.sowing$accessionid==9769,'RGRinf']),
+     labels=F0.sowing[F0.sowing$accessionid==9769,'accessionid'],
+     cex=0.6, col='purple',font=2)
+
+
+
 
  
