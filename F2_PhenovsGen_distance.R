@@ -67,66 +67,79 @@ text(F2pops.alldata$GeneticDist,F2pops.alldata$DistPhenoTot,labels=F2pops.alldat
 plot(log(F2pops.alldata$GeneticDist),log(F2pops.alldata$DistPhenoTot),type='n',main='log(PhenoDist) vs log(GenoDist)')
 text(log(F2pops.alldata$GeneticDist),log(F2pops.alldata$DistPhenoTot),labels=F2pops.alldata$code,cex=0.6)
 
-# Identify which pops have 0, 1 ou 2 GP in our Accession sowing list ####
+# Option A - Identify F2s based on already-defined F0 sowing list
+#=================================================================
 
-SowingList<-read.csv("C:/Users/Julie/Desktop/Postdoc/Projet Arabido/Arabido/F0_Sowinglist.csv",dec='.',header=T)
+    # Identify which pops have 0, 1 ou 2 GP in our Accession sowing list ####
+    
+    SowingList<-read.csv("C:/Users/Julie/Desktop/Postdoc/Projet Arabido/Arabido/F0_Sowinglist.csv",dec='.',header=T)
+    
+    F2pops.alldata$GM.sown<-(F2pops.alldata$Genotype1%in%SowingList$accessionid)
+    F2pops.alldata$GF.sown<-(F2pops.alldata$Genotype2%in%SowingList$accessionid)
+    
+    F2pops.alldata$GP.sown<-NA
+    for (r in 1:nrow(F2pops.alldata)){
+      F2pops.alldata[r,'GP.sown']<-  sum(F2pops.alldata[r,c(38:39)]=='TRUE')
+    }
+    
+    # Only select F2 pops who are in already defined F0 sowing list 
+      
+    F2.GrandChildren<-F2pops.alldata[!(F2pops.alldata$GP.sown==0),]
+    dim(F2.GrandChildren) #177 40
+    
+    # From these, only select pops with both grand parents in F0 sowing list
+    F2.w2GPsown<-F2pops.alldata[(F2pops.alldata$GP.sown==2),]
+    dim(F2.w2GPsown)
+    # 31
+    
+    # Plot GenoDist vs PhenoDist of GrandChildren only
+    plot(F2.GrandChildren$GeneticDist,F2.GrandChildren$DistPhenoTot,type='n',main='PhenoDist vs GenoDist\n GrandChildren of sown Accessions ')
+    text(F2.GrandChildren$GeneticDist,F2.GrandChildren$DistPhenoTot,labels=F2.GrandChildren$code,cex=0.7)
+    
+    # Show list of F2s with 2 GrandParents in sown list
+    text(F2.w2GPsown$GeneticDist,F2.w2GPsown$DistPhenoTot,labels=F2.w2GPsown$code,cex=0.7,col='red',font=2)
+    
+    F2sow<-F2.w2GPsown[!(F2.w2GPsown$code=='rd039'),]
+    dim(F2sow)
+    F2sow<-F2sow[!(F2sow$code=='rd326'),]
+    dim(F2sow)
+    F2sow<-F2sow[!(F2sow$code=='rd278'),]
+    dim(F2sow)
+    F2sow<-F2sow[!(F2sow$code=='rd351'),]
+    dim(F2sow)
+    F2sow<-F2sow[!(F2sow$code=='rd034'),]
+    dim(F2sow)
+    F2sow<-F2sow[!(F2sow$code=='rd099'),]
+    dim(F2sow)
+    F2sow<-F2sow[!(F2sow$code=='rd081'),]
+    dim(F2sow)
+    F2sow<-F2sow[!(F2sow$code=='rd086'),]
+    dim(F2sow)
+    F2sow<-F2sow[!(F2sow$code=='rd461'),]
+    dim(F2sow) # 22 40
+    F2sow<-F2sow[!(F2sow$code=='rd169'),]
+    dim(F2sow) # 21 40
+    F2sow<-F2sow[!(F2sow$code=='rd075'),]
+    dim(F2sow) # 20 40
+    
+    # Plot F2s to sow on normal scale
+    plot(F2.GrandChildren$GeneticDist,F2.GrandChildren$DistPhenoTot,type='n',main='PhenoDist vs GenoDist\n GrandChildren of sown Accessions ')
+    text(F2.GrandChildren$GeneticDist,F2.GrandChildren$DistPhenoTot,labels=F2.GrandChildren$code,cex=0.7)
+    text(F2sow$GeneticDist,F2sow$DistPhenoTot,labels=F2sow$code,cex=0.7,col='red',font=2)
+    
+    # Plot F2s to sow on log scale
+    plot(log(F2.GrandChildren$GeneticDist),log(F2.GrandChildren$DistPhenoTot),type='n',main='PhenoDist vs GenoDist\n GrandChildren of sown Accessions ')
+    text(log(F2.GrandChildren$GeneticDist),log(F2.GrandChildren$DistPhenoTot),labels=F2.GrandChildren$code,cex=0.7)
+    text(log(F2sow$GeneticDist),log(F2sow$DistPhenoTot),labels=F2sow$code,cex=0.7,col='red',font=2)
+    
+    droplevels(F2sow$code)
+      # [1] rd393 rd191 rd100 rd432 rd321 rd032 rd275 rd026 rd400 rd269 rd369 rd126 rd439 rd509 rd500 rd525 rd120 rd460 
+      # [19] rd316 rd425
 
-F2pops.alldata$GM.sown<-(F2pops.alldata$Genotype1%in%SowingList$accessionid)
-F2pops.alldata$GF.sown<-(F2pops.alldata$Genotype2%in%SowingList$accessionid)
-
-F2pops.alldata$GP.sown<-NA
-for (r in 1:nrow(F2pops.alldata)){
-  F2pops.alldata[r,'GP.sown']<-  sum(F2pops.alldata[r,c(38:39)]=='TRUE')
-}
+# Option B - Identify F2s based on already-defined F0 sowing list
+#=================================================================
   
-F2.GrandChildren<-F2pops.alldata[!(F2pops.alldata$GP.sown==0),]
-dim(F2.GrandChildren) #177 40
-
-F2.w2GPsown<-F2pops.alldata[(F2pops.alldata$GP.sown==2),]
-dim(F2.w2GPsown)
-# 31
-
-# Plot GenoDist vs PhenoDist of GrandChildren only
-plot(F2.GrandChildren$GeneticDist,F2.GrandChildren$DistPhenoTot,type='n',main='PhenoDist vs GenoDist\n GrandChildren of sown Accessions ')
-text(F2.GrandChildren$GeneticDist,F2.GrandChildren$DistPhenoTot,labels=F2.GrandChildren$code,cex=0.7)
-
-# Show list of F2s with 2 GrandParents in sown list
-text(F2.w2GPsown$GeneticDist,F2.w2GPsown$DistPhenoTot,labels=F2.w2GPsown$code,cex=0.7,col='red',font=2)
-
-F2sow<-F2.w2GPsown[!(F2.w2GPsown$code=='rd039'),]
-dim(F2sow)
-F2sow<-F2sow[!(F2sow$code=='rd326'),]
-dim(F2sow)
-F2sow<-F2sow[!(F2sow$code=='rd278'),]
-dim(F2sow)
-F2sow<-F2sow[!(F2sow$code=='rd351'),]
-dim(F2sow)
-F2sow<-F2sow[!(F2sow$code=='rd034'),]
-dim(F2sow)
-F2sow<-F2sow[!(F2sow$code=='rd099'),]
-dim(F2sow)
-F2sow<-F2sow[!(F2sow$code=='rd081'),]
-dim(F2sow)
-F2sow<-F2sow[!(F2sow$code=='rd086'),]
-dim(F2sow)
-F2sow<-F2sow[!(F2sow$code=='rd461'),]
-dim(F2sow) # 22 40
-F2sow<-F2sow[!(F2sow$code=='rd169'),]
-dim(F2sow) # 21 40
-F2sow<-F2sow[!(F2sow$code=='rd075'),]
-dim(F2sow) # 20 40
-
-# Plot F2s to sow on normal scale
-plot(F2.GrandChildren$GeneticDist,F2.GrandChildren$DistPhenoTot,type='n',main='PhenoDist vs GenoDist\n GrandChildren of sown Accessions ')
-text(F2.GrandChildren$GeneticDist,F2.GrandChildren$DistPhenoTot,labels=F2.GrandChildren$code,cex=0.7)
-text(F2sow$GeneticDist,F2sow$DistPhenoTot,labels=F2sow$code,cex=0.7,col='red',font=2)
-
-# Plot F2s to sow on log scale
-plot(log(F2.GrandChildren$GeneticDist),log(F2.GrandChildren$DistPhenoTot),type='n',main='PhenoDist vs GenoDist\n GrandChildren of sown Accessions ')
-text(log(F2.GrandChildren$GeneticDist),log(F2.GrandChildren$DistPhenoTot),labels=F2.GrandChildren$code,cex=0.7)
-text(log(F2sow$GeneticDist),log(F2sow$DistPhenoTot),labels=F2sow$code,cex=0.7,col='red',font=2)
-
-
+# Identify which pops have 0, 1 ou 2 GP in our Accession sowing list ####
 ##################################################################
 ### Code not necessary anymore, since we are not doing groups ####
 
