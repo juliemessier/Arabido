@@ -1,14 +1,26 @@
+# CONTENTS
+# 1. Create Empty Dataframe
+# 2. Add Generation name
+# 3. Add F0 and F2 genotype names
+# 4. Add Genotype replicate
+# 5. Add Unique Plant Name
+# 6. Assign Table 
+# 7. Assign Row
+# 8. Assign Columns
+# 9. Re-order dataframe in original order
+
+# 1. Create Empty Dataframe ####
 exp.design<-data.frame(matrix(nrow=560,ncol=1))
 dim(exp.design)
 
 exp.design[,1]<-seq(from=1,to=560)
 colnames(exp.design)<-"Pot.ID"
 
-# Add Generation name
+# 2. Add Generation name #####
 exp.design$Generation<-c(rep("F0",times=200),rep("F2",times=360))
 head(exp.design)
 
-# Add F0 and F2 genotype names
+# 3. Add F0 and F2 genotype names #####
 F0.list<-c(88,5151,6009,6040,6074,6076,6108,6145,6151,6177,6180,6184,6195,6216,6243,6898,
            6903,6911,6915,6922,6929,6938,6958,6961,6963,6970,6979,6987,7000,7002,7008,7028,7063,7077,7127,7143,7165,
            7186,7192,7296,7316,7320,7347,7394,8222,8230,8231,8240,8247,8351,8354,8357,8376,9057,9058,9371,9394,9399,
@@ -20,17 +32,17 @@ F2.list<-c('rd026','rd032','rd100','rd120','rd126','rd191','rd269','rd275','rd31
 
 exp.design$Genotype<-c(rep(F0.list,each=2),rep(F2.list,each=18))
 
-# Add Genotype replicate
+# 4. Add Genotype replicate #####
 exp.design$Genotype.replicate<-c(rep(1:2,times=100),rep(1:18,times=20))
 head(exp.design)
 
-# Add Unique Plant Name
+# 5. Add Unique Plant Name #####
 exp.design$Plant.Unique.Name<-paste0(exp.design$Genotype,'-',exp.design$Genotype.replicate)
 tail(exp.design)
 
-# Add table numbers
+# 6. Assign Table Numbers##### 
 
-# For F0, 2 plants per genotype, 1 plant on each of 2 different tables
+# For F0 - 2 plants per genotype x 100: 1 plant on each of 2 different tables
 F0.table.order<-c()
 for (i in 1:4){
   for (j in (i+1):5){
@@ -47,7 +59,7 @@ table (F0.table.order)
 
 rep(F0.table.order,times=5)
 
-# For F2, 18 plants per genotype, 4 plants on each of 3 different tables, 3 plants on remaining two tables
+# For F2 - 18 plants per genotype x 20: 4 plants on each of 3 different tables and 3 plants on remaining two tables
 
 F2.table.order<-c()
 t<-rep(seq(1:5),times=2)
@@ -74,6 +86,7 @@ exp.design$Table<-c(rep(F0.table.order,times=10),rep(F2.table.order,times=4))
 head(exp.design)
 tail(exp.design)
 
+# Make sure there are 112 plants (8 rows, 14 columns) per table
 table(exp.design$Table)
   # 1   2   3   4   5 
   # 112 112 112 112 112 
@@ -83,7 +96,7 @@ sum(table(exp.design$Table)) # 560
 # Re-order DataFrame by Table in order to assign random rows and columns
 exp.design<- exp.design[order(exp.design$Table,decreasing=FALSE),]
 
-# Assign random row numbers within each table (set of 112 rows, 5 times)
+# 7. Assign Row - random row numbers within each table (set of 112 rows, 5 times) ####
 exp.design$Row<-rep(sample(rep(LETTERS[1:8],times=14),replace=F),times=5)#each table has 14 columns of rows A-G, repeat for 5 tables
 
 # make sure each Table has 14 of each row
@@ -106,7 +119,7 @@ tail(exp.design)
 exp.design<-exp.design[order(exp.design$Table,exp.design$Row,decreasing=F),]
 exp.design[1:14,]
 
-# Assign random column numbers within each table (set of 112 columns, 5 times)
+# 8. Assign Columns - random column numbers within each table (set of 112 columns, 5 times) ####
 exp.design$Column<-rep(rep(sample(seq(1:14),replace=F),times=8),times=5)# each table has 8 rows of columns 1-14, repeat for 5 tables
 
 # make sure each Table has 8 of each column
@@ -151,11 +164,13 @@ head(exp.design,14)
 tail(exp.design,14)
 
 
-#Make sure I don't have duplicates of locations
-exp.design$Location<-paste0('t',exp.design$Table,'-row',exp.design$Row,'-col',exp.design$Column)
+# Make sure I don't have duplicates of locations
+exp.design$Unique.Location<-paste0('t',exp.design$Table,'-row',exp.design$Row,'-col',exp.design$Column)
 head(exp.design,14)
 length(unique(exp.design$Location)) # 560 ! :-)
 
-# Re-order in original order
+# 9. Re-order dataframe in original order ####
 exp.design<-exp.design[order(exp.design$Pot.ID),]
 head(exp.design,14)
+
+write.csv(exp.design,file='C:/Users/Julie/Desktop/Postdoc/Projet Arabido/Arabido.Exp.Design.csv',row.names=F)
