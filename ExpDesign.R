@@ -23,12 +23,14 @@ head(exp.design)
 # 3. Add F0 and F2 genotype names #####
 F0.list<-c(88,5151,6009,6040,6074,6076,6108,6145,6151,6177,6180,6184,6195,6216,6243,6898,
            6903,6911,6915,6922,6929,6938,6958,6961,6963,6970,6979,6987,7000,7002,7008,7028,7063,7077,7127,7143,7165,
-           7186,7192,7296,7316,7320,7347,7394,8222,8230,8231,8240,8247,8351,8354,8357,8376,9057,9058,9371,9394,9399,
-           9416,9470,9481,9507,9518,9520,9524,9528,9535,9537,9544,9548,9549,9553,9560,9567,9576,9577,9581,9586,9587,
-           9589,9594,9600,9606,9625,9637,9640,9649,9669,9697,9726,9737,9741,9743,9749,9758,9784,9939,9943,9947,10006)
+           7186,7192,7296,7316,7320,7347,7394,8133,8222,8230,8231,8240,8247,8351,8354,8357,8376,9057,9058,9371,9394,9399,
+           9416,9470,9481,9507,9518,9520,9524,9528,9535,9537,9544,9548,9549,9553,9560,9567,9576,9581,9586,9587,
+           9589,9594,9600,9606,9625,9637,9640,9649,9669,9697,9726,9737,9741,9743,9749,9758,9769,9784,9939,9943,9947)
+length(F0.list) #100
 
-F2.list<-c('rd026','rd032','rd100','rd120','rd126','rd191','rd269','rd275','rd316','rd321','rd369','rd393','rd400',
+F2.list<-c('rd026','rd032','rd100','rd120','rd126','rd191','rd269','rd275','rd316','rd321','rd348','rd369','rd400',
            'rd425','rd432','rd439','rd460','rd500','rd509','rd525')
+length(F2.list) #20
 
 exp.design$Genotype<-c(rep(F0.list,each=2),rep(F2.list,each=18))
 
@@ -38,7 +40,7 @@ head(exp.design)
 
 # 5. Add Unique Plant Name #####
 exp.design$Plant.Unique.Name<-paste0(exp.design$Genotype,'-',exp.design$Genotype.replicate)
-tail(exp.design)
+head(exp.design)
 
 # 6. Assign Table Numbers##### 
 
@@ -96,9 +98,14 @@ sum(table(exp.design$Table)) # 560
 # Re-order DataFrame by Table in order to assign random rows and columns
 exp.design<- exp.design[order(exp.design$Table,decreasing=FALSE),]
 
-# 7. Assign Row - random row numbers within each table (set of 112 rows, 5 times) ####
-exp.design$Row<-rep(sample(rep(LETTERS[1:8],times=14),replace=F),times=5)#each table has 14 columns of rows A-G, repeat for 5 tables
-
+# 7. Assign Row - random row numbers within each table (set of 112 rows, redo 5 times) ####
+exp.design$Row<-c(NA)
+for (t in 1:5){
+  r<-sample(rep(LETTERS[1:8],times=14),replace=F)
+    exp.design[exp.design$Table==t,'Row']<-r
+}
+head(exp.design)
+tail(exp.design)
 # make sure each Table has 14 of each row
 table(exp.design$Row,by=exp.design$Table)
     # by
@@ -112,15 +119,27 @@ table(exp.design$Row,by=exp.design$Table)
     # G 14 14 14 14 14
     # H 14 14 14 14 14
 
-head(exp.design)
-tail(exp.design)
 
 # Re-order DataFrame by Rows within tables in order to assign unique column numbers within each row within each table. 
 exp.design<-exp.design[order(exp.design$Table,exp.design$Row,decreasing=F),]
-exp.design[1:14,]
+exp.design[1:15,]
 
 # 8. Assign Columns - random column numbers within each table (set of 112 columns, 5 times) ####
+# randomly draw col number from 1-14, 14 times
+# repeat 8 times (for each of rows A to G)
+# repeat that 5 times (for each tables I to V)
 exp.design$Column<-rep(rep(sample(seq(1:14),replace=F),times=8),times=5)# each table has 8 rows of columns 1-14, repeat for 5 tables
+head(exp.design,14)
+
+exp.design$Column<-c(NA)
+for (t in 1:5){
+  for(r in LETTERS[1:8]){
+    c<-sample(seq(1:14),replace=F)
+  exp.design[exp.design$Table==t&exp.design$Row==r,'Column']<-c
+  }
+}
+head(exp.design,16)
+tail(exp.design,16)
 
 # make sure each Table has 8 of each column
 table(exp.design$Column,by=exp.design$Table)
@@ -144,7 +163,7 @@ table(exp.design$Column,by=exp.design$Table)
 # make sure each row has 5 of each column
 table(exp.design$Column,by=exp.design$Row)
   # by
-  # A B C D E F G H
+  #    A B C D E F G H
   # 1  5 5 5 5 5 5 5 5
   # 2  5 5 5 5 5 5 5 5
   # 3  5 5 5 5 5 5 5 5
@@ -160,17 +179,14 @@ table(exp.design$Column,by=exp.design$Row)
   # 13 5 5 5 5 5 5 5 5
   # 14 5 5 5 5 5 5 5 5
 
-head(exp.design,14)
-tail(exp.design,14)
-
-
 # Make sure I don't have duplicates of locations
-exp.design$Unique.Location<-paste0('t',exp.design$Table,'-row',exp.design$Row,'-col',exp.design$Column)
+exp.design$Unique.Location<-paste0('t',exp.design$Table,'-',exp.design$Row,exp.design$Column)
 head(exp.design,14)
-length(unique(exp.design$Location)) # 560 ! :-)
+length(unique(exp.design$Unique.Location)) # 560 ! :-)
 
 # 9. Re-order dataframe in original order ####
 exp.design<-exp.design[order(exp.design$Pot.ID),]
-head(exp.design,14)
+head(exp.design,16)
+tail(exp.design,16)
 
 write.csv(exp.design,file='C:/Users/Julie/Desktop/Postdoc/Projet Arabido/Arabido.Exp.Design.csv',row.names=F)
